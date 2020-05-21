@@ -44,7 +44,7 @@ func (c Client) ParamValues(param string) []string {
     if err != nil {
         log.Fatal(err)
     }
-    return data[param]
+    return data[param].([]string)
 }
 
 // Return number of records that will be retrieved by a given query
@@ -65,7 +65,7 @@ func (c Client) count_query(query Query) int {
     if err != nil {
         log.Fatal(err)
     }
-    return data["count"]
+    return data["count"].(int)
 }
 
 // Return the result of the query
