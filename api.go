@@ -1,3 +1,10 @@
+// Copyright (c) 2020 Joshua Yoder
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE.txt file.
+
+// Go wrapper for USDA NASS API
+// See the USDA NASS QuickStats API docs for more usage details:
+// https://quickstats.nass.usda.gov/api
 package nass
 
 import (
@@ -7,11 +14,13 @@ import (
         "log"
 )
 
+// Represents a client to the USDA
 type Client struct {
-    BaseURL     string
-    Key         string
+    BaseURL     string // Base URL for USDA NASS
+    Key         string // API key
 }
 
+// Create a new client bearing a given key
 func NewClient(key string) *Client {
     baseURL := "http://quickstats.nass.usda.gov/api"
     client := Client{
@@ -21,6 +30,7 @@ func NewClient(key string) *Client {
     return &client
 }
 
+// Return all possible values of a given parameter
 func (c Client) ParamValues(param string) map[string]interface{} {
     resp, err := http.Get(c.BaseURL + "/get_param_values/" +
                                     "?key=" + c.Key +
@@ -37,13 +47,11 @@ func (c Client) ParamValues(param string) map[string]interface{} {
     return data
 }
 
+// Return number of records that will be retrieved by a given query
 func (c Client) count_query(query Query) map[string]interface{} {
     var params strings.Builder
     for k, v := range query.Params {
-        params.WriteString("&")
-        params.WriteString(k)
-        params.WriteString("=")
-        params.WriteString(v)
+        params.WriteString("&" + k + "=" + v)
     }
     resp, err := http.Get(c.BaseURL + "/get_counts/" +
                                    "?key=" + c.Key +
@@ -60,13 +68,11 @@ func (c Client) count_query(query Query) map[string]interface{} {
     return data
 }
 
+// Return the result of the query
 func (c Client) call_query(query Query) map[string]interface{} {
     var params strings.Builder
     for k, v := range query.Params {
-        params.WriteString("&")
-        params.WriteString(k)
-        params.WriteString("=")
-        params.WriteString(v)
+        params.WriteString("&" + k + "=" + v)
     }
     resp, err := http.Get(c.BaseURL + "/api_GET/" +
                                    "?key=" + c.Key +
