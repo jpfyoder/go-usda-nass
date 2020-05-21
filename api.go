@@ -38,13 +38,13 @@ func (c Client) ParamValues(param string) []string {
     if err != nil {
         log.Fatal(err)
     }
-    var data map[string]interface{}
+    var data map[string][]string
     decoder := json.NewDecoder(resp.Body)
     err = decoder.Decode(&data)
     if err != nil {
         log.Fatal(err)
     }
-    return data[param].([]string)
+    return data[param]
 }
 
 // Return number of records that will be retrieved by a given query
@@ -59,13 +59,13 @@ func (c Client) count_query(query Query) int {
     if err != nil {
         log.Fatal(err)
     }
-    var data map[string]interface{}
+    var data map[string]int
     decoder := json.NewDecoder(resp.Body)
     err = decoder.Decode(&data)
     if err != nil {
         log.Fatal(err)
     }
-    return data["count"].(int)
+    return data["count"]
 }
 
 // Return the result of the query
