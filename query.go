@@ -39,7 +39,7 @@ func (q Query) FilterRange(param string, value string, operator string) Query {
 }
 
 // Return count of records to be returned by the query if executed
-func (q Query) Count() map[string]interface{} {
+func (q Query) Count() int {
     return q.Client.count_query(q)
 }
 

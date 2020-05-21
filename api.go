@@ -31,7 +31,7 @@ func NewClient(key string) *Client {
 }
 
 // Return all possible values of a given parameter
-func (c Client) ParamValues(param string) map[string]interface{} {
+func (c Client) ParamValues(param string) []string {
     resp, err := http.Get(c.BaseURL + "/get_param_values/" +
                                     "?key=" + c.Key +
                                     "&param=" + param)
@@ -44,11 +44,11 @@ func (c Client) ParamValues(param string) map[string]interface{} {
     if err != nil {
         log.Fatal(err)
     }
-    return data
+    return data[param]
 }
 
 // Return number of records that will be retrieved by a given query
-func (c Client) count_query(query Query) map[string]interface{} {
+func (c Client) count_query(query Query) int {
     var params strings.Builder
     for k, v := range query.Params {
         params.WriteString("&" + k + "=" + v)
@@ -65,7 +65,7 @@ func (c Client) count_query(query Query) map[string]interface{} {
     if err != nil {
         log.Fatal(err)
     }
-    return data
+    return data["count"]
 }
 
 // Return the result of the query
