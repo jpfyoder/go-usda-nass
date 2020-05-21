@@ -20,7 +20,7 @@ func NewQuery(client *Client) *Query {
 }
 
 // Add a filter to the corresponding query object
-func (q Query) Filter(param string, value string, operator string) Query {
+func (q Query) Filter(param string, value string) Query {
     q.Params[param] = value
     return q
 }
