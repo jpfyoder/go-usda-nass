@@ -11,12 +11,12 @@ type Query struct {
 }
 
 // Create a new Query object from the client
-func NewQuery(client *Client) *Query {
+func NewQuery(client *Client) Query {
     query := Query{
         Client:         client, // client object
         Params:         make(map[string]string), // list of query parameters
     }
-    return &query
+    return query
 }
 
 // Add a filter to the corresponding query object
@@ -44,6 +44,6 @@ func (q Query) Count() int {
 }
 
 // Execute the query and return the serialized results
-func (q Query) Execute() map[string]interface{} {
+func (q Query) Execute() interface{} {
     return q.Client.call_query(q)
 }

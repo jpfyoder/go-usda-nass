@@ -10,6 +10,7 @@ package nass
 import (
         "strings"
         "net/http"
+        "net/url"
         "encoding/json"
         "log"
 )
@@ -51,7 +52,7 @@ func (c Client) ParamValues(param string) []string {
 func (c Client) count_query(query Query) int {
     var params strings.Builder
     for k, v := range query.Params {
-        params.WriteString("&" + k + "=" + v)
+        params.WriteString("&" + k + "=" + url.QueryEscape(v))
     }
     resp, err := http.Get(c.BaseURL + "/get_counts/" +
                                    "?key=" + c.Key +
@@ -69,10 +70,10 @@ func (c Client) count_query(query Query) int {
 }
 
 // Return the result of the query
-func (c Client) call_query(query Query) map[string]interface{} {
+func (c Client) call_query(query Query) interface{} {
     var params strings.Builder
     for k, v := range query.Params {
-        params.WriteString("&" + k + "=" + v)
+        params.WriteString("&" + k + "=" + url.QueryEscape(v))
     }
     resp, err := http.Get(c.BaseURL + "/api_GET/" +
                                    "?key=" + c.Key +
@@ -80,11 +81,14 @@ func (c Client) call_query(query Query) map[string]interface{} {
     if err != nil {
         log.Fatal(err)
     }
-    var data map[string]interface{}
+    var data map[string][]interface{}
     decoder := json.NewDecoder(resp.Body)
     err = decoder.Decode(&data)
     if err != nil {
         log.Fatal(err)
     }
-    return data
+    if len(data["error"]) != 0 {
+        log.Fatal("API Error: " + data["error"][0].(string))
+    }
+    return data["data"]
 }
